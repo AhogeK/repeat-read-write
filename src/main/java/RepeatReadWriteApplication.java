@@ -45,8 +45,8 @@ public class RepeatReadWriteApplication {
     }
 
     public static void main(String[] args) {
+        System.out.println("欢迎使用 单词记录与记忆 的简单终端程序！_(:з」∠)_\n");
         while (true) {
-            System.out.println("欢迎使用 单词记录与记忆 的简单终端程序！_(:з」∠)_\n");
             System.out.println("请选择你要进行模式：\n1 - 记录模式\n2 - 记忆模式\n-1 - 保存并退出");
             try {
                 Scanner sc = new Scanner(System.in);
