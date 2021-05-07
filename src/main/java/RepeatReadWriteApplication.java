@@ -30,6 +30,7 @@ public class RepeatReadWriteApplication {
     static {
         MODAL_MAP.put(1, "记录模式");
         MODAL_MAP.put(2, "记忆模式");
+        MODAL_MAP.put(3, "总记录数");
         MODAL_MAP.put(-1, "保存并退出");
         try {
             FileInputStream fi = new FileInputStream(RESOURCES_PATH);
@@ -53,12 +54,13 @@ public class RepeatReadWriteApplication {
     public static void main(String[] args) {
         System.out.println(ANSI_GREEN + "欢迎使用 单词记录与记忆 的简单终端程序！_(:з」∠)_\n" + ANSI_RESET);
         while (true) {
-            System.out.println("请选择你要进行模式：\n1 - 记录模式\n2 - 记忆模式\n-1 - 保存并退出");
+            System.out.println("\n请选择你要进行模式：\n");
+            MODAL_MAP.forEach((k, v) -> System.out.println(k + " - " + v));
             try {
                 Scanner sc = new Scanner(System.in);
                 int userSelectModal = sc.nextInt();
                 if (MODAL_MAP.containsKey(userSelectModal)) {
-                    System.out.printf("您选择了\"%s\"!\n\n", MODAL_MAP.get(userSelectModal));
+                    System.out.printf("\n您选择了\"%s\"!\n\n", MODAL_MAP.get(userSelectModal));
                     if (userSelectModal == 1) {
                         boolean isTrue = true;
                         while (isTrue) {
@@ -117,6 +119,8 @@ public class RepeatReadWriteApplication {
                         o.close();
                         f.close();
                         System.exit(0);
+                    } else if (userSelectModal == 3) {
+                        System.out.println(ANSI_GREEN + "总记录单词数: " + MY_ALL_RECORDS_WORDS.size() + ANSI_RESET);
                     }
                 } else {
                     System.err.println(ANSI_RED + "您的输入有误，请重新输入！" + ANSI_RESET);
