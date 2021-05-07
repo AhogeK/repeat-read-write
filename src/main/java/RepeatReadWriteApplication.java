@@ -21,6 +21,12 @@ public class RepeatReadWriteApplication {
 
     private static final String RESOURCES_PATH = System.getProperty("user.dir") + "/MY_ALL_RECORD_WORDS";
 
+    private static final String ANSI_RESET = "\u001B[0m";
+
+    private static final String ANSI_RED = "\u001B[31m";
+
+    public static final String ANSI_GREEN = "\u001B[32m";
+
     static {
         MODAL_MAP.put(1, "记录模式");
         MODAL_MAP.put(2, "记忆模式");
@@ -35,17 +41,17 @@ public class RepeatReadWriteApplication {
             oi.close();
             fi.close();
         } catch (FileNotFoundException e) {
-            System.out.println("File not found");
+            System.err.println(ANSI_RED + "单词记录文件未找到" + ANSI_RESET);
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("No data!");
+            System.err.println(ANSI_RED + "单词记录文件无数据" + ANSI_RESET);
         } catch (ClassNotFoundException e) {
-            System.out.println("Class not found!");
+            System.err.println(ANSI_RED + "对象类型未找到" + ANSI_RESET);
         }
     }
 
     public static void main(String[] args) {
-        System.out.println("欢迎使用 单词记录与记忆 的简单终端程序！_(:з」∠)_\n");
+        System.out.println(ANSI_GREEN + "欢迎使用 单词记录与记忆 的简单终端程序！_(:з」∠)_\n" + ANSI_RESET);
         while (true) {
             System.out.println("请选择你要进行模式：\n1 - 记录模式\n2 - 记忆模式\n-1 - 保存并退出");
             try {
@@ -78,7 +84,7 @@ public class RepeatReadWriteApplication {
                         boolean isTrue = true;
                         while (isTrue) {
                             if (MY_ALL_RECORDS_WORDS.size() == 0) {
-                                System.err.println("您还未记录过任何单词，请重新选择");
+                                System.err.println(ANSI_RED  + "您还未记录过任何单词，请重新选择" + ANSI_RESET);
                                 throw new RuntimeException();
                             }
                             TreeMap<Double, WordInfo> weightMap = new TreeMap<>();
@@ -113,10 +119,10 @@ public class RepeatReadWriteApplication {
                         System.exit(0);
                     }
                 } else {
-                    System.err.println("您的输入有误，请重新输入！");
+                    System.err.println(ANSI_RED + "您的输入有误，请重新输入！" + ANSI_RESET);
                 }
             } catch (InputMismatchException | IOException e) {
-                System.err.println("您的输入有误，请重新输入！");
+                System.err.println(ANSI_RED + "您的输入有误，请重新输入！" +ANSI_RESET);
             } catch (RuntimeException e) {
                 System.out.println("等待进入重新选择... ...");
             }
