@@ -138,6 +138,7 @@ public class RepeatReadWriteApplication {
         word.setTranslator(translator);
         word.setMerriamWebsterUrl(url);
         if (MY_ALL_RECORDS_WORDS.containsKey(wordStr)) {
+            System.out.println("该单词已存在，记忆次数 + 1");
             int num = MY_ALL_RECORDS_WORDS.get(wordStr).getNum() + 1;
             MY_ALL_RECORDS_WORDS.remove(wordStr);
             word.setNum(num);
