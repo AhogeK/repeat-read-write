@@ -43,11 +43,12 @@ public class RepeatReadWriteApplication {
             fi.close();
         } catch (FileNotFoundException e) {
             System.err.println(ANSI_RED + "单词记录文件未找到" + ANSI_RESET);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (EOFException e) {
             System.err.println(ANSI_RED + "单词记录文件无数据" + ANSI_RESET);
         } catch (ClassNotFoundException e) {
             System.err.println(ANSI_RED + "对象类型未找到" + ANSI_RESET);
+        } catch (IOException e) {
+            System.err.println(ANSI_RED + "数据流异常" + ANSI_RESET);
         }
     }
 
