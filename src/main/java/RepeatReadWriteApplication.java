@@ -95,7 +95,7 @@ public class RepeatReadWriteApplication {
                                     .max(Comparator.comparing(WordInfo::getNum)).get().getNum() << 1;
                             MY_ALL_RECORDS_WORDS.forEach((k, v) -> {
                                 double lastWeight = weightMap.size() == 0 ? 0 : weightMap.lastKey();
-                                weightMap.put(v.getNum() - (v.getNum() << 1) + maxSize + lastWeight, v);
+                                weightMap.put(((v.getNum() - (v.getNum() << 1) + maxSize) << 1)+ lastWeight, v);
                             });
                             double randomWeight = weightMap.lastKey() * Math.random();
                             SortedMap<Double, WordInfo> tailMap = weightMap.tailMap(randomWeight, false);
