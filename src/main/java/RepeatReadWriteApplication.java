@@ -53,7 +53,7 @@ public class RepeatReadWriteApplication {
     }
 
     public static void main(String[] args) {
-        System.out.println(ANSI_GREEN + "欢迎使用 单词记录与记忆 的简单终端程序！_(:з」∠)_\n" + ANSI_RESET);
+        System.out.println(ANSI_GREEN + "欢迎使用 单词记录与记忆 的简单终端程序！_(:з」∠)_" + ANSI_RESET);
         while (true) {
             System.out.println("\n请选择你要进行模式：\n");
             MODAL_MAP.forEach((k, v) -> System.out.println(k + " - " + v));
@@ -91,9 +91,11 @@ public class RepeatReadWriteApplication {
                                 throw new RuntimeException();
                             }
                             TreeMap<Double, WordInfo> weightMap = new TreeMap<>();
+                            int maxSize = MY_ALL_RECORDS_WORDS.values().stream()
+                                    .max(Comparator.comparing(WordInfo::getNum)).get().getNum() << 1;
                             MY_ALL_RECORDS_WORDS.forEach((k, v) -> {
                                 double lastWeight = weightMap.size() == 0 ? 0 : weightMap.lastKey();
-                                weightMap.put((v.getNum() - v.getNum() * 2 + 10000) + lastWeight, v);
+                                weightMap.put(v.getNum() - (v.getNum() << 1) + maxSize + lastWeight, v);
                             });
                             double randomWeight = weightMap.lastKey() * Math.random();
                             SortedMap<Double, WordInfo> tailMap = weightMap.tailMap(randomWeight, false);
