@@ -54,7 +54,8 @@ public class RepeatReadWriteApplication {
 
     public static void main(String[] args) {
         System.out.println(ANSI_GREEN + "欢迎使用 单词记录与记忆 的简单终端程序！_(:з」∠)_" + ANSI_RESET);
-        while (true) {
+        boolean saving = false;
+        while (!saving) {
             System.out.println("\n请选择你要进行模式：\n");
             MODAL_MAP.forEach((k, v) -> System.out.println(k + " - " + v));
             try {
@@ -63,65 +64,11 @@ public class RepeatReadWriteApplication {
                 if (MODAL_MAP.containsKey(userSelectModal)) {
                     System.out.printf("\n您选择了\"%s\"!\n\n", MODAL_MAP.get(userSelectModal));
                     if (userSelectModal == 1) {
-                        boolean isTrue = true;
-                        while (isTrue) {
-                            WordInfo word = new WordInfo();
-                            System.out.println("请输入需要记忆的单词:");
-                            sc = new Scanner(System.in);
-                            String wordStr = sc.nextLine();
-                            System.out.println("请输入该单词的翻译:");
-                            String translator = sc.nextLine();
-                            System.out.println("如果有，请输入该单词的网页词典地址:");
-                            String url = sc.nextLine();
-                            System.out.println("是否确认？(退回选择请输入 'exit') y | n");
-                            String checkStr = sc.nextLine();
-                            if ("y".equalsIgnoreCase(checkStr) || "".equals(checkStr)) {
-                                addNewWord(word, wordStr, translator, url);
-                            } else if ("exit".equalsIgnoreCase(checkStr)) {
-                                addNewWord(word, wordStr, translator, url);
-                                isTrue = false;
-                            }
-                        }
-                        throw new RuntimeException();
+                        record();
                     } else if (userSelectModal == 2) {
-                        boolean isTrue = true;
-                        while (isTrue) {
-                            if (MY_ALL_RECORDS_WORDS.size() == 0) {
-                                System.err.println(ANSI_RED  + "您还未记录过任何单词，请重新选择" + ANSI_RESET);
-                                throw new RuntimeException();
-                            }
-                            TreeMap<Double, WordInfo> weightMap = new TreeMap<>();
-                            int maxSize = MY_ALL_RECORDS_WORDS.values().stream()
-                                    .max(Comparator.comparing(WordInfo::getNum)).get().getNum() << 1;
-                            MY_ALL_RECORDS_WORDS.forEach((k, v) -> {
-                                double lastWeight = weightMap.size() == 0 ? 0 : weightMap.lastKey();
-                                weightMap.put(((v.getNum() - (v.getNum() << 1) + maxSize) << 1)+ lastWeight, v);
-                            });
-                            double randomWeight = weightMap.lastKey() * Math.random();
-                            SortedMap<Double, WordInfo> tailMap = weightMap.tailMap(randomWeight, false);
-                            if (weightMap.containsKey(tailMap.firstKey())) {
-                                WordInfo wordInfo = weightMap.get(tailMap.firstKey());
-                                System.out.println(wordInfo.toString());
-                                MY_ALL_RECORDS_WORDS.get(wordInfo.getWorld()).setNum(wordInfo.getNum() + 1);
-                                System.out.println("回车继续，或输入 'exit' 退回模式选择");
-                                sc = new Scanner(System.in);
-                                String inputStr = sc.nextLine();
-                                if ("exit".equalsIgnoreCase(inputStr)) {
-                                    isTrue = false;
-                                }
-                            }
-                        }
-                        throw new RuntimeException();
+                        remember();
                     } else if (userSelectModal == -1) {
-                        System.out.println("正在保存退出中... ...");
-                        FileOutputStream f = new FileOutputStream(RESOURCES_PATH);
-                        ObjectOutputStream o = new ObjectOutputStream(f);
-                        // Write objects to file
-                        o.writeObject(MY_ALL_RECORDS_WORDS);
-                        o.flush();
-                        o.close();
-                        f.close();
-                        System.exit(0);
+                        saving = save();
                     } else if (userSelectModal == 3) {
                         System.out.println(ANSI_GREEN + "总记录单词数: " + MY_ALL_RECORDS_WORDS.size() + ANSI_RESET);
                     }
@@ -129,11 +76,91 @@ public class RepeatReadWriteApplication {
                     System.err.println(ANSI_RED + "您的输入有误，请重新输入！" + ANSI_RESET);
                 }
             } catch (InputMismatchException | IOException e) {
-                System.err.println(ANSI_RED + "您的输入有误，请重新输入！" +ANSI_RESET);
+                System.err.println(ANSI_RED + "您的输入有误，请重新输入！" + ANSI_RESET);
             } catch (RuntimeException e) {
                 System.out.println("等待进入重新选择... ...");
             }
         }
+        System.exit(0);
+    }
+
+    /**
+     * 保存
+     *
+     * @throws IOException IO流操作异常
+     */
+    private static boolean save() throws IOException {
+        System.out.println("正在保存退出中... ...");
+        FileOutputStream f = new FileOutputStream(RESOURCES_PATH);
+        ObjectOutputStream o = new ObjectOutputStream(f);
+        // Write objects to file
+        o.writeObject(MY_ALL_RECORDS_WORDS);
+        o.flush();
+        o.close();
+        f.close();
+        return true;
+    }
+
+    /**
+     * 记忆模式
+     */
+    private static void remember() {
+        Scanner sc;
+        boolean isTrue = true;
+        while (isTrue) {
+            if (MY_ALL_RECORDS_WORDS.size() == 0) {
+                System.err.println(ANSI_RED + "您还未记录过任何单词，请重新选择" + ANSI_RESET);
+                throw new RuntimeException();
+            }
+            TreeMap<Double, WordInfo> weightMap = new TreeMap<>();
+            int maxSize = MY_ALL_RECORDS_WORDS.values().stream()
+                    .max(Comparator.comparing(WordInfo::getNum)).get().getNum() << 1;
+            MY_ALL_RECORDS_WORDS.forEach((k, v) -> {
+                double lastWeight = weightMap.size() == 0 ? 0 : weightMap.lastKey();
+                weightMap.put(((v.getNum() - (v.getNum() << 1) + maxSize) << 1) + lastWeight, v);
+            });
+            double randomWeight = weightMap.lastKey() * Math.random();
+            SortedMap<Double, WordInfo> tailMap = weightMap.tailMap(randomWeight, false);
+            if (weightMap.containsKey(tailMap.firstKey())) {
+                WordInfo wordInfo = weightMap.get(tailMap.firstKey());
+                System.out.println(wordInfo.toString());
+                MY_ALL_RECORDS_WORDS.get(wordInfo.getWorld()).setNum(wordInfo.getNum() + 1);
+                System.out.println("回车继续，或输入 'exit' 退回模式选择");
+                sc = new Scanner(System.in);
+                String inputStr = sc.nextLine();
+                if ("exit".equalsIgnoreCase(inputStr)) {
+                    isTrue = false;
+                }
+            }
+        }
+        throw new RuntimeException();
+    }
+
+    /**
+     * 记录模式
+     */
+    private static void record() {
+        Scanner sc;
+        boolean isTrue = true;
+        while (isTrue) {
+            WordInfo word = new WordInfo();
+            System.out.println("请输入需要记忆的单词:");
+            sc = new Scanner(System.in);
+            String wordStr = sc.nextLine();
+            System.out.println("请输入该单词的翻译:");
+            String translator = sc.nextLine();
+            System.out.println("如果有，请输入该单词的网页词典地址:");
+            String url = sc.nextLine();
+            System.out.println("是否确认？(退回选择请输入 'exit') y | n");
+            String checkStr = sc.nextLine();
+            if ("y".equalsIgnoreCase(checkStr) || "".equals(checkStr)) {
+                addNewWord(word, wordStr, translator, url);
+            } else if ("exit".equalsIgnoreCase(checkStr)) {
+                addNewWord(word, wordStr, translator, url);
+                isTrue = false;
+            }
+        }
+        throw new RuntimeException();
     }
 
     /**
