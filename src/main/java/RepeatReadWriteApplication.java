@@ -144,14 +144,14 @@ public class RepeatReadWriteApplication {
         boolean isTrue = true;
         while (isTrue) {
             WordInfo word = new WordInfo();
-            System.out.println("请输入需要记忆的单词:");
+            System.out.println("\n请输入需要记忆的单词:\n");
             sc = new Scanner(System.in);
             String wordStr = sc.nextLine();
-            System.out.println("请输入该单词的翻译:");
+            System.out.println("\n请输入该单词的翻译:\n");
             String translator = sc.nextLine();
-            System.out.println("如果有，请输入该单词的网页词典地址:");
+            System.out.println("\n如果有，请输入该单词的网页词典地址:\n");
             String url = sc.nextLine();
-            System.out.println("是否确认？(退回选择请输入 'exit') y | n");
+            System.out.println("\n是否确认？(退回选择请输入 'exit') y | n\n");
             String checkStr = sc.nextLine();
             if ("y".equalsIgnoreCase(checkStr) || "".equals(checkStr)) {
                 addNewWord(word, wordStr, translator, url);

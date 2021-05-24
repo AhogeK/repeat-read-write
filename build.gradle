@@ -1,6 +1,5 @@
 apply plugin: 'java'
 apply plugin: 'idea'
-sourceCompatibility = 1.8
 
 version '1.0-SNAPSHOT'
 
@@ -23,9 +22,9 @@ test {
 
 jar {
     manifest {
-        attributes(
-                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
-                'Main-Class': 'RepeatReadWriteApplication'
-        )
+        attributes 'Main-Class': 'RepeatReadWriteApplication'
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
